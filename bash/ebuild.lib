@@ -240,6 +240,9 @@ __load_ebuild() {
 	SANDBOX_ON=1
 	export S=${WORKDIR}/${P}
 
+	# EAPI 6 and up raise expansion errors on failed globbing in global scope
+	${PKGCORE_GLOBAL_FAILGLOB} && __shopt_push -s failglob
+
 	unset   IUSE   REQUIRED_USE   DEPEND   RDEPEND   PDEPEND
 	local E_IUSE E_REQUIRED_USE E_DEPEND E_RDEPEND E_PDEPEND
 
@@ -249,6 +252,8 @@ __load_ebuild() {
 	fi
 
 	__qa_invoke source "${EBUILD}" >&2
+
+	${PKGCORE_GLOBAL_FAILGLOB} && __shopt_pop
 
 	# a reasonable default for $S
 	if [[ -z ${S} ]]; then
