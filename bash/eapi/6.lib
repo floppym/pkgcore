@@ -36,4 +36,18 @@ eapply_user() {
 	fi
 }
 
+__phase_src_prepare() {
+	local patches
+
+	if patches=$(declare -p PATCHES 2> /dev/null); then
+		if [[ ${patches} == "declare -a "* ]]; then
+			eapply "${PATCHES[@]}"
+		else
+			eapply ${PATCHES}
+		fi
+	fi
+
+	eapply_user
+}
+
 :
